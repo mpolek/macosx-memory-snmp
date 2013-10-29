@@ -31,7 +31,7 @@
 			<t_lower_limit></t_lower_limit>
 			<lower_limit>0</lower_limit>
 			<t_base_value></t_base_value>
-			<base_value>1000</base_value>
+			<base_value>1024</base_value>
 			<t_unit_value></t_unit_value>
 			<unit_value></unit_value>
 			<t_unit_exponent_value></t_unit_exponent_value>

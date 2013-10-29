@@ -12,6 +12,7 @@
 # Changes
 # - Added check for number of command line arguments
 # - Only output selected attribute as number of bytes
+# - Add support for "speculative" to properly calculate free memory in 10.6 and above
 #
 # Home:    github.com/emeidi/macosx-memory-snmp
 
@@ -54,7 +55,10 @@ for row in range(1,len(vmLines)-2):
     vmStats[(rowElements[0])] = int(rowElements[1].strip('\.')) * 4096
 
 if parameter == 'free':
-	print str(vmStats["Pages free"])
+	print str(vmStats["Pages free"]+vmStats["Pages speculative"])
+
+if parameter == 'speculative':
+	print str(vmStats["Pages speculative"])
 
 if parameter == 'wired':
 	print str(vmStats["Pages wired down"])
@@ -71,10 +75,12 @@ if parameter == 'used':
 
 if parameter == 'interactive':
 	# Stuff left behind from the original script
-	print 'Wired Memory:\t\t%d MB' % ( vmStats["Pages wired down"]/1024/1024 )
-	print 'Active Memory:\t\t%d MB' % ( vmStats["Pages active"]/1024/1024 )
-	print 'Inactive Memory:\t%d MB' % ( vmStats["Pages inactive"]/1024/1024 )
-	print 'Free Memory:\t\t%d MB' % ( vmStats["Pages free"]/1024/1024 )
-	print 'Real Mem Total (ps):\t%.3f MB' % ( rssTotal/1024/1024 )
+	print 'Free Memory:\t\t%.3f GB' % ( (vmStats["Pages free"]+vmStats["Pages speculative"])/1024/1024/1024.0 )
+	print 'Wired Memory:\t\t%.1f MB' % ( vmStats["Pages wired down"]/1024/1024.0 )
+	print 'Active Memory:\t\t%.3f GB' % ( vmStats["Pages active"]/1024/1024/1024.0 )
+	print 'Inactive Memory:\t%.3f GB' % ( vmStats["Pages inactive"]/1024/1024/1024.0 )
+	print 'Used Total:\t\t%.3f GB' % ( (vmStats["Pages wired down"] + vmStats["Pages active"] + vmStats["Pages inactive"] )/1024/1024/1024.0 )
+	print ''
+	print 'Real Mem Total (ps):\t%.3f GB' % ( rssTotal/1024/1024/1024.0 )
 
 sys.exit(0);
